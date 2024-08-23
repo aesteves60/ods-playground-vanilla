@@ -1,0 +1,19 @@
+{
+  "name": "ods-playground-vanilla",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  },
+  "dependencies": {
+    "@ovhcloud/ods-components": "^18.0.0-alpha.1",
+    "@ovhcloud/ods-themes": "^18.0.0-alpha.1"
+  }
+}
