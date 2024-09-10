@@ -11,14 +11,13 @@ type SignInPayload = {
 }
 
 const signIn = createAsyncThunk('session/signIn', async ({ password, username }: SignInPayload) => {
-  console.log('password, username', password, username)
   return signInRequest(username, password)
 })
 
 const signOut = createAsyncThunk('session/signOut', async () => {
   return signOutRequest()
 })
-    
+
 
 const sessionReducer = createSlice({
   name: 'session',
@@ -57,7 +56,7 @@ export type {
   SignInPayload,
 }
 
-export { 
+export {
   signIn,
   signOut,
 }

@@ -14,8 +14,8 @@
     "vite": "^5.4.1"
   },
   "dependencies": {
-    "@ovhcloud/ods-components": "^18.0.0-alpha.1",
-    "@ovhcloud/ods-themes": "^18.0.0-alpha.1",
-    "@reduxjs/toolkit": "^2.2.7"
+    "@ovhcloud/ods-components": "18.0.0-alpha.1",
+    "@ovhcloud/ods-themes": "18.0.0-alpha.1",
+    "@reduxjs/toolkit": "2.2.7"
   }
 }

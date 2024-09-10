@@ -1,25 +1,25 @@
 <div class="sign-in">
   <ods-text preset="heading-1" class="sign-in__title">Welcome to the ODS Vanilla Playground App</ods-text>
-    
+
   <form id="sign-in-form" class="sign-in__form">
     <ods-form-field id="sign-in-form-field-username">
-      <label class="sign-in__label" for="sign-in-username" slot="label">
-        Username: 
+      <label class="sign-in__form__label" for="sign-in-username" slot="label">
+        Username:
       </label>
-    
-      <ods-input is-required name="sign-in-username" class="sign-in__input" id="sign-in-username" type="text"></ods-input>
+
+      <ods-input is-required name="sign-in-username" class="sign-in__form__input" id="sign-in-username" type="text"></ods-input>
     </ods-form-field>
 
     <ods-form-field id="sign-in-form-field-password">
-      <label class="sign-in__label" for="sign-in-password" slot="label">
-        Password: 
+      <label class="sign-in__form__label" for="sign-in-password" slot="label">
+        Password:
       </label>
-    
-      <ods-password is-required name="sign-in-password" class="sign-in__input" id="sign-in-password"></ods-password>
+
+      <ods-password is-required name="sign-in-password" class="sign-in__form__input" id="sign-in-password"></ods-password>
     </ods-form-field>
 
-    <ods-text id="sign-in-error-message" class="sign-in__error-message" preset="heading-6">Error message</ods-text>
+    <span id="sign-in-error-message" class="sign-in__form__error-message">Login or password not correct</span>
 
-    <ods-button id="sign-in-submit" class="sign-in__button" label="Sign In" type="submit"></ods-button>
+    <ods-button id="sign-in-submit" class="sign-in__form__button" label="Sign In" type="submit"></ods-button>
   </form>
 </div>
