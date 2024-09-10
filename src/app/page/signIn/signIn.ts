@@ -2,12 +2,12 @@ import './signIn.scss';
 import template from './signIn.html?raw';
 
 import { OdsButton, OdsFormField, OdsInput, OdsText } from '@ovhcloud/ods-components';
-import { store } from '../../state/store';
-import { navigate } from '../../router/router';
-import { signIn } from '../../state/store/session';
-import { ACTION_STATUS } from '../../constant/slice';
-import { getQuerySelector } from '../../helpers/render';
-import { RouteName } from '../../router/route';
+import { store } from '@app/state/store';
+import { navigate } from '@app/router/router';
+import { signIn } from '@app/state/store/session';
+import { ACTION_STATUS } from '@app/constant/slice';
+import { getQuerySelector } from '@app/helpers/render';
+import { RouteName } from '@app/router/route';
 import { Unsubscribe } from '@reduxjs/toolkit';
 
 class SignIn {

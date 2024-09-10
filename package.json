@@ -16,6 +16,7 @@
   "dependencies": {
     "@ovhcloud/ods-components": "18.0.0-alpha.1",
     "@ovhcloud/ods-themes": "18.0.0-alpha.1",
-    "@reduxjs/toolkit": "2.2.7"
+    "@reduxjs/toolkit": "2.2.7",
+    "zod": "3.23.8"
   }
 }

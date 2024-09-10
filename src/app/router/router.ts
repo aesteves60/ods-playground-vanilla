@@ -3,14 +3,12 @@ import { Route, RouteName, routes } from "./route";
 let app: HTMLElement;
 const injectAppElement = (appElement: HTMLElement) => app = appElement;
 
-const navigate = (routeName: RouteName) => {
-    getPreviousRoute()?.afterExit?.();
+const navigate = (routeName: RouteName, params?: Record<string, string>) => {
+  getPreviousRoute()?.afterExit?.();
     const route = routes[routeName]
-    window.history.pushState(
-        {},
-        route.path,
-        window.location.origin + route.path,
-    );
+    const pathWithParams = params ? route.path.split('/').map((segment) => params[segment] ?? segment).join('/') : route.path
+    const url = new URL(window.location.origin + pathWithParams)
+    window.history.pushState({}, "", url);
 
     if (routeName === RouteName.SIGN_IN) {
         return renderPage(route);

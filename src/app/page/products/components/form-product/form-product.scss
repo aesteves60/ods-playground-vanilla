@@ -1,0 +1,11 @@
+.form-product {
+  display: flex;
+  flex-flow: column;
+  color: var(--ods-color-neutral-500);
+
+  &__actions {
+    display: flex;
+    align-self: end;
+    gap: 10px;
+  }
+}

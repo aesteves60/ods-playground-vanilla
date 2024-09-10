@@ -1,0 +1,19 @@
+.side-menu {
+  background-color: var(--ods-color-neutral-100);
+  list-style: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  &__item {
+    padding: 1rem;
+
+    &__icon {
+      color: var(--ods-color-text);
+    }
+
+    &__link ods-link::part(link) {
+      color: var(--ods-color-text);
+    }
+  }
+}

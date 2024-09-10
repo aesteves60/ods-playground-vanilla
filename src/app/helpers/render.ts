@@ -1,5 +1,5 @@
-function getQuerySelector<T extends Element>(query: string): T {
-    const element = document.querySelector<T>(query);
+function getQuerySelector<T extends Element>(query: string, ctx?: Element): T {
+    const element = (ctx || document).querySelector<T>(query);
     if (!element) {
         throw new Error('Element with query: ' + query + ' not found');
     }

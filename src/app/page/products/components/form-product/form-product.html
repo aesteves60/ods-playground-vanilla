@@ -1,0 +1,32 @@
+<form class="form-product" id="form-product-form" onsubmit="return false">
+  <ods-form-field id="form-product-field-title">
+    <label for="form-product-title" slot="label">
+      Title:
+    </label>
+
+    <ods-input is-required name="title" class="form-product__input" id="form-product-input-title" type="text"></ods-input>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-price">
+    <label for="form-product-price" slot="label">
+      Price:
+    </label>
+
+    <span>
+      <ods-input is-required name="price" class="form-product__input" id="form-product-input-price" type="number"></ods-input> €
+    </span>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-description">
+    <label for="form-product-description" slot="label">
+      Description:
+    </label>
+
+    <ods-textarea is-required   ="description" class="form-product__input" id="form-product-textarea-description" type="number"></ods-textarea>
+  </ods-form-field>
+
+  <div class="form-product__actions">
+    <ods-button id="form-product-button-cancel" variant="outline" label="Cancel"></ods-button>
+    <ods-button id="form-product-button-submit" label="Create" type="submit"></ods-button>
+  </div>
+</form>

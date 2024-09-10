@@ -1,1 +1,36 @@
 @import '@ovhcloud/ods-themes/default';
+
+$header-height: 40px;
+$side-menu-height: 220px;
+
+.app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  &:has(~ .app__layout) {
+    top: $header-height;
+    left: $side-menu-height;
+    width: calc(100% - $side-menu-height);
+    height: calc(100% - $header-height);
+  }
+
+  &__layout {
+    display: none;
+    grid-template-columns: $side-menu-height 1fr;
+    height: 100%;
+
+    &__header {
+      position: fixed;
+      right: 0;
+      left: 0;
+      height: $header-height;
+    }
+
+    &__side-menu {
+      padding-top: $header-height;
+    }
+  }
+}
