@@ -8,31 +8,30 @@ import { signIn } from '../../state/store/session';
 import { ACTION_STATUS } from '../../constant/slice';
 import { getQuerySelector } from '../../helpers/render';
 import { RouteName } from '../../router/route';
+import { Unsubscribe } from '@reduxjs/toolkit';
 
 class SignIn {
-  button!: OdsButton;
-  form!: HTMLFormElement;
-  formFieldUsername!: OdsFormField;
-  formFieldPassword!: OdsFormField;
-  inputUsername!: (OdsInput & HTMLElement);
-  inputPassword!: (OdsInput & HTMLElement);
-  errorMessage!: (OdsText & HTMLElement);
-  signInStatus?: ACTION_STATUS;
+  private button!: OdsButton;
+  private form!: HTMLFormElement;
+  private formFieldUsername!: OdsFormField;
+  private formFieldPassword!: OdsFormField;
+  private inputUsername!: (OdsInput & HTMLElement);
+  private inputPassword!: (OdsInput & HTMLElement);
+  private errorMessage!: (OdsText & HTMLElement);
+  private signInStatus?: ACTION_STATUS;
+
+  private storeUnsubscribe?: Unsubscribe;
 
   init() {
     this.setHtmlElement()
 
-    this.inputUsername?.addEventListener('odsChange', () => {
-      this.onOdsInputChange(this.inputUsername, this.formFieldUsername, 'Fill the username, please')
-    })
+    this.inputUsername?.addEventListener('odsChange', () => this.handlerOdsChangeUsername())
 
-    this.inputPassword?.addEventListener('odsChange', () => {
-      this.onOdsInputChange(this.inputPassword, this.formFieldPassword, 'Fill the password, please')
-    })
+    this.inputPassword?.addEventListener('odsChange', () => this.handlerOdsChangePassword())
 
     this.form?.addEventListener('submit', (event) => this.onSubmitForm(event))
 
-    store.subscribe(async () => {
+    this.storeUnsubscribe = store.subscribe(async () => {
       let previousSignInStatus = this.signInStatus
       this.signInStatus = store.getState().session.signInStatus
 
@@ -40,6 +39,21 @@ class SignIn {
         await this.handlerSignInStatusChange()
       }
     })
+  }
+
+  destroy() {
+    this.storeUnsubscribe?.()
+    this.inputUsername?.removeEventListener('odsChange', () => this.handlerOdsChangeUsername())
+    this.inputPassword?.removeEventListener('odsChange', () => this.handlerOdsChangePassword())
+    this.form?.removeEventListener('submit', (event) => this.onSubmitForm(event))
+  }
+
+  private handlerOdsChangeUsername() {
+    this.onOdsInputChange(this.inputUsername, this.formFieldUsername, 'Fill the username, please')
+  }
+
+  private handlerOdsChangePassword() {
+    this.onOdsInputChange(this.inputPassword, this.formFieldPassword, 'Fill the password, please')
   }
 
   private async handlerSignInStatusChange() {
@@ -72,7 +86,6 @@ class SignIn {
 
   private async onSubmitForm(event: Event) {
     event.preventDefault()
-    this.form?.reportValidity
 
     const passwordValue = this.inputPassword?.value
     const usernameValue = this.inputUsername?.value

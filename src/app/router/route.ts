@@ -11,7 +11,9 @@ enum RouteName {
 
 interface Route {
   afterEnter?: () => void;
+  afterExit?: () => void;
   guard?: () => boolean;
+  instance: unknown
   template: string;
   path: string;
 }
@@ -24,24 +26,30 @@ const routes: Record<RouteName, Route> = {
   [RouteName.SIGN_IN]: {
     path: '/',
     template: SignIn.loadTemplate(),
-    afterEnter: () => {
-      const signIn = new SignIn();
-      signIn.init();
+    instance: new SignIn(),
+    afterEnter: function() {
+      (this.instance as SignIn).init();
+    },
+    afterExit: function() {
+      (this.instance as SignIn).destroy();
     }
   },
   [RouteName.DASHBOARD]: {
     path: '/dashboard',
     template: contact,
+    instance: {},
     guard,
   },
   [RouteName.USERS]: {
     path: '/users',
     template: contact,
+    instance: {},
     guard,
   },
   [RouteName.PRODUCTS]: {
     path: '/products',
     template: contact,
+    instance: {},
     guard,
   },
 };
