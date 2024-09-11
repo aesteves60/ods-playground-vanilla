@@ -72,7 +72,7 @@ class FormProduct extends HTMLElement {
 
     this.form.addEventListener('submit', async() => {
       if (await this.isValidForm()) {
-        this.dispatchEvent(new CustomEvent('submit', {
+        this.dispatchEvent(new CustomEvent('submitProduct', {
           bubbles: true,
           cancelable: true,
           detail: {

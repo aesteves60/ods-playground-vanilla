@@ -11,13 +11,17 @@ class NewProduct {
   async init() {
     this.formProduct = getQuerySelector('#new-product-form')
 
-    this.formProduct.addEventListener('cancel', () => navigate(RouteName.PRODUCTS))
-    this.formProduct.addEventListener('submit', () => navigate(RouteName.PRODUCTS))
+    this.formProduct.addEventListener('cancel', () => this.navigateToProduct())
+    this.formProduct.addEventListener('submitProduct', () => this.navigateToProduct())
+  }
+
+  private navigateToProduct() {
+    navigate(RouteName.PRODUCTS)
   }
 
   destroy() {
-    this.formProduct.removeEventListener('cancel', () => navigate(RouteName.PRODUCTS))
-    this.formProduct.removeEventListener('submit', () => navigate(RouteName.PRODUCTS))
+    this.formProduct.removeEventListener('cancel', () => this.navigateToProduct())
+    this.formProduct.removeEventListener('submitProduct', () => this.navigateToProduct())
   }
 
   static loadTemplate(): string {

@@ -28,13 +28,13 @@ class EditProduct {
     })
 
     this.formProduct.addEventListener('cancel', () => navigate(RouteName.PRODUCTS))
-    this.formProduct.addEventListener('submit', () => navigate(RouteName.PRODUCTS))
+    this.formProduct.addEventListener('submitProduct', () => navigate(RouteName.PRODUCTS))
   }
 
   destroy() {
     this.storeUnsubscribe?.()
     this.formProduct.removeEventListener('cancel', () => navigate(RouteName.PRODUCTS))
-    this.formProduct.removeEventListener('submit', () => navigate(RouteName.PRODUCTS))
+    this.formProduct.removeEventListener('submitProduct', () => navigate(RouteName.PRODUCTS))
   }
 
   private setHTMLElement() {
