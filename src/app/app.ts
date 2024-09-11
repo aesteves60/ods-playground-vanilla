@@ -4,7 +4,7 @@ import { Link } from './components/link/link';
 import { SideMenu } from './components/side-menu/side-menu';
 import { hasSessionToken } from './helpers/session';
 import { RouteName } from './router/route';
-import { injectAppElement, navigate } from './router/router';
+import { getCurrentRouteKey, injectAppElement, navigate } from './router/router';
 import { defineCustomElements } from '@ovhcloud/ods-components/dist/loader';
 import { store } from './state/store';
 import { getQuerySelector } from './helpers/render';
@@ -31,7 +31,12 @@ import { DeleteModal } from './page/products/components/delete-modal/delete-moda
   })
 
   if (hasSessionToken()) {
-    navigate(RouteName.DASHBOARD);
+    const routeKey = getCurrentRouteKey()
+    if (routeKey) {
+      navigate(routeKey);
+    } else {
+      navigate(RouteName.DASHBOARD)
+    }
     appLayout.style.display = 'grid';
   } else {
     navigate(RouteName.SIGN_IN);

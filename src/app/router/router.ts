@@ -1,36 +1,46 @@
+import { nextTick } from "@app/helpers/render";
 import { Route, RouteName, routes } from "./route";
 
 let app: HTMLElement;
 const injectAppElement = (appElement: HTMLElement) => app = appElement;
 
 const navigate = (routeName: RouteName, params?: Record<string, string>) => {
-  getPreviousRoute()?.afterExit?.();
-    const route = routes[routeName]
-    const pathWithParams = params ? route.path.split('/').map((segment) => params[segment] ?? segment).join('/') : route.path
-    const url = new URL(window.location.origin + pathWithParams)
-    window.history.pushState({}, "", url);
+  const route = routes[routeName]
+  if (route.path !== window.location.pathname) {
+    getCurrentRoute()?.afterExit?.();
+  }
 
-    if (routeName === RouteName.SIGN_IN) {
-        return renderPage(route);
-    }
+  const pathWithParams = params ? route.path.split('/').map((segment) => params[segment] ?? segment).join('/') : route.path
+  const url = new URL(window.location.origin + pathWithParams)
+  window.history.pushState({}, "", url);
 
-    if (route.guard?.()) {
-        return renderPage(route);
-    } else {
-        return navigate(RouteName.SIGN_IN);
-    }
+  if (routeName === RouteName.SIGN_IN) {
+    return renderPage(route);
+  }
+
+  if (route.guard?.()) {
+    return renderPage(route);
+  } else {
+    return navigate(RouteName.SIGN_IN);
+  }
 };
 
-const getPreviousRoute = () => {
+
+const getCurrentRoute = () => {
   return Object.values(routes).find((route) => route.path === window.location.pathname)
 }
 
+const getCurrentRouteKey = () => {
+  return Object.keys(routes).find((routeKey) => routes[routeKey as RouteName].path === window.location.pathname) as RouteName | undefined
+}
+
 const renderPage = (route: Route) => {
-    app.innerHTML = route.template
-    return route.afterEnter?.()
+  app.innerHTML = route.template
+  nextTick(() => route.afterEnter?.())
 }
 
 export {
-    injectAppElement,
-    navigate,
+  getCurrentRouteKey,
+  injectAppElement,
+  navigate,
 };

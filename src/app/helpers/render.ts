@@ -6,6 +6,11 @@ function getQuerySelector<T extends Element>(query: string, ctx?: Element): T {
     return element;
 }
 
+function nextTick(callback: () => unknown) {
+  setTimeout(callback, 0);
+}
+
 export {
     getQuerySelector,
+    nextTick
 }

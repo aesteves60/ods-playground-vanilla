@@ -4,7 +4,7 @@ import template from './products.html?raw';
 import { store } from '@app/state/store';
 import { deleteProduct, list } from '@app/state/store/products';
 import { OdsPagination, OdsPaginationCurrentChangeEvent, OdsTable } from '@ovhcloud/ods-components';
-import { getQuerySelector } from '@app/helpers/render';
+import { getQuerySelector, nextTick } from '@app/helpers/render';
 import { ACTION_STATUS } from '@app/constant/slice';
 import { DeleteModal } from '../components/delete-modal/delete-modal';
 import { Product } from '@app/models/product';
@@ -104,7 +104,7 @@ class Products {
     }
 
     // wait render
-    setTimeout(() => {
+    nextTick(() => {
       products.forEach((product) => {
         const productDeleteItemButton = getQuerySelector(`#product-delete-item-${product.id}`)
         productDeleteItemButton.addEventListener('click', () => {
@@ -117,7 +117,7 @@ class Products {
         productEditItemButton.addEventListener('click', () => {
           navigate(RouteName.EDIT_PRODUCTS, { ':id': product.id.toString() })
         })
-      }, 0)
+      })
     })
   }
 
