@@ -7,9 +7,8 @@
   padding: 0 15px;
 
   &__title {
-    &::part(text) {
-      color: var(--ods-color-neutral-000);
-    }
+    color: var(--ods-color-neutral-000);
+    font-weight: 600;
   }
 
   &__sign-out {

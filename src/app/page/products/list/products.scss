@@ -10,10 +10,6 @@
     align-items: center;
     justify-content: space-between;
 
-    &__title::part(text) {
-      color: var(--ods-color-primary-500);
-    }
-
     &__link ods-link::part(link) {
       color: var(--ods-color-neutral-500);
     }
@@ -34,6 +30,7 @@
   }
 
   &__pagination {
+    display: none;
     justify-self: center;
   }
 }
