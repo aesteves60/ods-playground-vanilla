@@ -9,11 +9,13 @@
     "start": "vite"
   },
   "devDependencies": {
+    "sass": "^1.77.8",
     "typescript": "^5.5.3",
     "vite": "^5.4.1"
   },
   "dependencies": {
-    "@ovhcloud/ods-components": "^18.0.0-alpha.1",
-    "@ovhcloud/ods-themes": "^18.0.0-alpha.1"
+    "@ovhcloud/ods-components": "18.0.0-alpha.1",
+    "@ovhcloud/ods-themes": "18.0.0-alpha.1",
+    "@reduxjs/toolkit": "2.2.7"
   }
 }

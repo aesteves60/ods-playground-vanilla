@@ -1,0 +1,35 @@
+.sign-in {
+  display: flex;
+  flex-flow: column;
+
+  &__title::part(text) {
+    text-align: center;
+    color: var(--ods-color-neutral-500);
+  }
+
+  &__form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    gap: 10px;
+
+    &__input::part(input) {
+      width: 400px;
+    }
+
+    &__label {
+      color: var(--ods-color-neutral-500);
+    }
+
+    &__button::part(button) {
+      width: 400px;
+    }
+
+    &__error-message {
+      display: none;
+      color: var(--ods-color-critical-500);
+      margin: 5px 0;
+    }
+  }
+}

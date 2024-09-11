@@ -1,40 +1,38 @@
-import { contact } from "../contact";
-import { SignIn } from "../page/signIn/signIn";
-
-type Route = string;
-
-const routes: Record<Route, (() => Promise<string>) | string> = {
-    '/' : SignIn.loadTemplate(),
-    '/contact' : contact,
-};
+import { Route, RouteName, routes } from "./route";
 
 let app: HTMLElement;
 const injectAppElement = (appElement: HTMLElement) => app = appElement;
 
-const navigate = async (route: Route) => {
+const navigate = (routeName: RouteName) => {
+    getPreviousRoute()?.afterExit?.();
+    const route = routes[routeName]
     window.history.pushState(
         {},
-        route,
-        window.location.origin + route,
+        route.path,
+        window.location.origin + route.path,
     );
-    await changeAppInnerHTML(routes[route]);
-};
 
-window.onpopstate = async () => {
-    await changeAppInnerHTML(routes[window.location.pathname]);
-};
+    if (routeName === RouteName.SIGN_IN) {
+        return renderPage(route);
+    }
 
-const changeAppInnerHTML = async (template: (() => Promise<string>) | string): Promise<void> => {
-    if (typeof template === 'string') {
-        app.innerHTML = template;
+    if (route.guard?.()) {
+        return renderPage(route);
     } else {
-        app.innerHTML = await template?.();
+        return navigate(RouteName.SIGN_IN);
     }
 };
 
+const getPreviousRoute = () => {
+  return Object.values(routes).find((route) => route.path === window.location.pathname)
+}
+
+const renderPage = (route: Route) => {
+    app.innerHTML = route.template
+    return route.afterEnter?.()
+}
+
 export {
-    changeAppInnerHTML,
     injectAppElement,
     navigate,
-    routes,
 };
