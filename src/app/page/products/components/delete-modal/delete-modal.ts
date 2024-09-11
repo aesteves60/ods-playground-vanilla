@@ -6,7 +6,7 @@ class DeleteModal extends HTMLElement {
   private buttonCancel!: OdsButton & HTMLElement;
   private buttonDelete!: OdsButton & HTMLElement;
   private modal!: OdsModal & HTMLElement;
-  private p!: HTMLParagraphElement;
+  private text!: HTMLParagraphElement;
 
   constructor () {
 		super();
@@ -30,7 +30,7 @@ class DeleteModal extends HTMLElement {
 
   set productTitle(value: string) {
     this.setAttribute('product-title', value)
-    this.p.innerText = this.p.innerText.replace('{ productTitle }', value ?? '')
+    this.text.innerText = this.text.innerText.replace('{ productTitle }', value ?? '')
   }
 
   get productTitle(): string | null {
@@ -40,14 +40,20 @@ class DeleteModal extends HTMLElement {
   connectedCallback() {
     this.setElement()
 
-    this.modal.addEventListener('odsClose', () => {
-      this.close()
-    })
-    this.buttonCancel.addEventListener('click', () => {
-      this.close()
-    })
+    this.modal.addEventListener('odsClose', () => this.close())
+    this.buttonCancel.addEventListener('click', () => this.close())
 
     this.buttonDelete.addEventListener('click', () => {
+      this.emitDelete()
+      this.close()
+    })
+  }
+
+  disconnectCallback() {
+    this.modal.removeEventListener('odsClose', () => this.close())
+    this.buttonCancel.removeEventListener('click', () => this.close())
+
+    this.buttonDelete.removeEventListener('click', () => {
       this.emitDelete()
       this.close()
     })
@@ -63,18 +69,18 @@ class DeleteModal extends HTMLElement {
 
   private close() {
     this.isOpen = false
-    this.setPDataBinding()
+    this.setTextDataBinding()
   }
 
-  private setPDataBinding() {
-    this.p.innerText = this.p.innerText.replace(this.productTitle ?? '', '{ productTitle }')
+  private setTextDataBinding() {
+    this.text.innerText = this.text.innerText.replace(this.productTitle ?? '', '{ productTitle }')
   }
 
   private setElement() {
     this.buttonCancel = getQuerySelector('#delete-modal-cancel', this)
     this.buttonDelete = getQuerySelector('#delete-modal-delete', this)
     this.modal = getQuerySelector('#delete-modal', this);
-    this.p = getQuerySelector('p', this);
+    this.text = getQuerySelector('#delete-modal-text', this);
   }
 }
 

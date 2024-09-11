@@ -60,10 +60,12 @@ class Products {
         this.pagination.totalItems = productsState.count
         this.loading.style.display = 'none'
         this.content.style.display = 'grid'
+        this.pagination.style.display = 'flex'
       }
       if (hasListStatusChange && productsState.listStatus === ACTION_STATUS.pending) {
         this.loading.style.display = 'block'
         this.content.style.display = 'none'
+        this.pagination.style.display = 'none'
       }
 
       // Delete change
@@ -73,6 +75,7 @@ class Products {
         this.pagination.totalItems = productsState.count
         this.loading.style.display = 'none'
         this.content.style.display = 'grid'
+        this.pagination.style.display = 'flex'
       }
       this.previousListStatus = productsState.listStatus
       this.previousDeleteStatus = productsState.deleteStatus
