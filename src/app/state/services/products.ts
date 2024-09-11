@@ -1,6 +1,6 @@
-import { config } from '../../config'
-import { erase, get, post, put } from '../../helpers/http'
-import { Product } from '../../models/product'
+import { config } from '@app/config'
+import { erase, get, post, put } from '@app/helpers/http'
+import { Product } from '@app/models/product'
 
 async function create(product: Product) {
   return post(`${config.api.products}/add`, product.toApi())
