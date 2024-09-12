@@ -27,8 +27,8 @@ class Products {
     this.setHtmlElement()
 
     this.pagination.addEventListener('odsChange', (({ detail }: OdsPaginationCurrentChangeEvent) => {
-      this.loadList({ page: detail.current, perPage: detail.itemPerPage })
-    }) as EventListener)
+        this.loadList({ page: detail.current, perPage: detail.itemPerPage });
+      }) as EventListener)
 
     this.modal.addEventListener('delete', () => {
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
@@ -40,15 +40,17 @@ class Products {
   destroy() {
     this.stateUnsubscribe?.()
     this.pagination.removeEventListener('odsChange', (({ detail }: OdsPaginationCurrentChangeEvent) => {
-      this.loadList({ page: detail.current, perPage: detail.itemPerPage })
-    }) as EventListener)
+        this.loadList({ page: detail.current, perPage: detail.itemPerPage });
+      }) as EventListener)
 
     this.modal.removeEventListener('delete', () => {
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
     })
+    this.previousListStatus = ACTION_STATUS.idle;
+    this.previousDeleteStatus = ACTION_STATUS.idle;
   }
 
-  private async loadList({ page, perPage }: { page: number; perPage: number }) {
+  private loadList({ page, perPage }: { page: number; perPage: number }) {
     store.dispatch(list({ page, perPage }))
     this.stateUnsubscribe = store.subscribe(() => {
       const productsState = store.getState().products
