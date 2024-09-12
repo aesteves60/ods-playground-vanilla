@@ -10,7 +10,7 @@ import { Product } from '@app/models/product';
 import { RouteName } from '@app/router/route';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import { navigate } from '@app/router/router';
-import { store } from '@app/state/store';
+import { AppDispatch, store } from '@app/state/store';
 
 class Products {
   private content!: HTMLElement;
@@ -26,21 +26,21 @@ class Products {
   async init() {
     this.setHtmlElement()
 
-    this.pagination.addEventListener('odsChange', (async({ detail }: OdsPaginationCurrentChangeEvent) => {
-      await this.loadList({ page: detail.current, perPage: detail.itemPerPage })
+    this.pagination.addEventListener('odsChange', (({ detail }: OdsPaginationCurrentChangeEvent) => {
+      this.loadList({ page: detail.current, perPage: detail.itemPerPage })
     }) as unknown as EventListener)
 
     this.modal.addEventListener('delete', () =>
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
     )
 
-    await this.loadList({ page: await this.pagination.getCurrentPage(), perPage: this.pagination.defaultItemsPerPage })
+    this.loadList({ page: await this.pagination.getCurrentPage(), perPage: this.pagination.defaultItemsPerPage })
   }
 
   destroy() {
     this.stateUnsubscribe?.()
-    this.pagination.removeEventListener('odsChange', ((async ({ detail }: OdsPaginationCurrentChangeEvent) => {
-      await this.loadList({ page: detail.current, perPage: detail.itemPerPage })
+    this.pagination.removeEventListener('odsChange', ((({ detail }: OdsPaginationCurrentChangeEvent) => {
+      this.loadList({ page: detail.current, perPage: detail.itemPerPage })
     })) as unknown as EventListener)
 
     this.modal.removeEventListener('delete', () =>
@@ -50,8 +50,8 @@ class Products {
     this.previousDeleteStatus = ACTION_STATUS.idle;
   }
 
-  private async loadList({ page, perPage }: { page: number; perPage: number }) {
-    await store.dispatch(list({ page, perPage }))
+  private loadList({ page, perPage }: { page: number; perPage: number }) {
+    void store.dispatch(list({ page, perPage }));
     this.stateUnsubscribe = store.subscribe(() => {
       const productsState = store.getState().products
 

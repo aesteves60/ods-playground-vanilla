@@ -74,13 +74,13 @@ class SignIn {
     }
   }
 
-  private async onSubmitForm(event: Event) {
+  private onSubmitForm(event: Event) {
     event.preventDefault()
 
     const passwordValue = this.inputPassword.value,
      usernameValue = this.inputUsername.value
     if (usernameValue && passwordValue) {
-      await store.dispatch(signIn({
+      void  store.dispatch(signIn({
         password: passwordValue.toString(),
         username: usernameValue.toString(),
       }))

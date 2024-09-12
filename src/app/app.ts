@@ -24,17 +24,25 @@ function defineAppCustomElements() {
   }
 }
 
+function navigateToCurrentRoute() {
+  const routeKey = getCurrentRouteKey()
+  if (routeKey) {
+    navigate(routeKey)
+    return true
+  }
+  return false
+}
+
 (() => {
-  const app = getQuerySelector<HTMLElement>('#app'),
-   appLayout = getQuerySelector<HTMLElement>('#app-layout');
+  const app = getQuerySelector<HTMLElement>('#app')
+  const appLayout = getQuerySelector<HTMLElement>('#app-layout');
 
   defineCustomElements();
   defineAppCustomElements();
   injectAppElement(app);
 
   window.onpopstate = () => {
-    const routeKey = getCurrentRouteKey()
-    routeKey && navigate(routeKey);
+    navigateToCurrentRoute()
   };
 
   store.subscribe(() => {
@@ -45,15 +53,11 @@ function defineAppCustomElements() {
     }
     if (sessionState.signOutStatus === ACTION_STATUS.succeeded) {
       appLayout.classList.remove('app__layout--display')
-      return
     }
   })
 
   if (hasSessionToken()) {
-    const routeKey = getCurrentRouteKey()
-    if (routeKey) {
-      navigate(routeKey);
-    } else {
+    if (!navigateToCurrentRoute()) {
       navigate(RouteName.DASHBOARD)
     }
     appLayout.classList.add('app__layout--display')

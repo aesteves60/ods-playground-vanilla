@@ -20,11 +20,11 @@ class Dashboard {
   private previousCountProductStatus = ACTION_STATUS.idle
   private storeUnsubscribe?: Unsubscribe;
 
-  async init() {
+  init() {
     this.setHTMLElement()
 
-    await store.dispatch(countProduct())
-    await store.dispatch(countUsers())
+    void store.dispatch(countProduct())
+    void store.dispatch(countUsers())
 
     this.storeUnsubscribe = store.subscribe(() => {
       this.handlerProductsChange()

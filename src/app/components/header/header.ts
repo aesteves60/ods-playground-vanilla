@@ -19,8 +19,8 @@ class Header extends HTMLElement {
 
   connectedCallback() {
     this.linkSignOut = getQuerySelector<OdsLink & HTMLElement>('#header-sign-out')
-    this.linkSignOut.addEventListener('click', async() => {
-      await store.dispatch(signOut())
+    this.linkSignOut.addEventListener('click', () => {
+      void store.dispatch(signOut())
       navigate(RouteName.SIGN_IN);
     })
   }

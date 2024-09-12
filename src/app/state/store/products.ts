@@ -47,7 +47,7 @@ const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: numb
 
 const getById = createAsyncThunk('products/getById', async (id: number) => getByIdRequest(id))
 
-const list = createAsyncThunk('products/list', async ({ page, perPage }: ListActionPayload) => listRequest(page, perPage))
+const list = createAsyncThunk('products/list', ({ page, perPage }: ListActionPayload) => listRequest(page, perPage))
 
 const update = createAsyncThunk('products/update', async (product: Product) => updateRequest(product))
 

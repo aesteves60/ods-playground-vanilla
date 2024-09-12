@@ -38,7 +38,8 @@ export default [
       "id-length": "off",
       "no-undefined": "off",
       "sort-imports": ["error", { "allowSeparatedGroups": true }],
-      "max-statements": ["error", 15]
+      "max-statements": ["error", 15],
+      "no-void": "off"
     },
     files: ["src/app/**/*.ts"],
   }

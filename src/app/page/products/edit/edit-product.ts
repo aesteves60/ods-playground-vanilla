@@ -15,11 +15,11 @@ class EditProduct {
   private formProduct!: FormProduct
   private storeUnsubscribe?: Unsubscribe
 
-  async init() {
+  init() {
     this.setHTMLElement()
 
     const id = Number(window.location.pathname.split('/').pop())
-    await store.dispatch(getById(id));
+    void  store.dispatch(getById(id));
     this.storeUnsubscribe = store.subscribe(() => {
       const productsState = store.getState().products
       const hasGetByIdStatusChange = this.previousGetByIdStatus !== productsState.listStatus
