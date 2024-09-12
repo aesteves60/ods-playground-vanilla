@@ -5,6 +5,8 @@
     <ods-card class="dashboard__card">
       <ods-text preset="heading-4" class="dashboard__card__title">Users</ods-text>
       <ods-divider class="dashboard__card__divider"></ods-divider>
+      <span id="dashboard-users-count" class="dashboard__card__count"></span>
+      <ods-skeleton id="dashboard-users-count-loading" class="dashboard__card__loading"></ods-skeleton>
       <app-link label="Manage users" route="USERS" class="dashboard__card__link">
       </app-link>
     </ods-card>
@@ -12,6 +14,8 @@
     <ods-card class="dashboard__card">
       <ods-text preset="heading-4" class="dashboard__card__title">Products</ods-text>
       <ods-divider class="dashboard__card__divider"></ods-divider>
+      <span id="dashboard-products-count" class="dashboard__card__count"></span>
+      <ods-skeleton id="dashboard-products-count-loading" class="dashboard__card__loading"></ods-skeleton>
       <app-link label="Manage products" route="PRODUCTS" class="dashboard__card__link">
       </app-link>
     </ods-card>

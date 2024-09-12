@@ -1,12 +1,13 @@
 import { nextTick } from "@app/helpers/render";
 import { Route, RouteName, routes } from "./route";
+import { hasSessionToken } from "@app/helpers/session";
 
 let app: HTMLElement;
 const injectAppElement = (appElement: HTMLElement) => app = appElement;
 
 const navigate = (routeName: RouteName, params?: Record<string, string>) => {
   const route = routes[routeName]
-  if (route.path !== window.location.pathname) {
+  if (hasSessionToken() && route.path !== window.location.pathname) {
     getCurrentRoute()?.afterExit?.();
   }
 
@@ -24,7 +25,6 @@ const navigate = (routeName: RouteName, params?: Record<string, string>) => {
     return navigate(RouteName.SIGN_IN);
   }
 };
-
 
 const getCurrentRoute = () => {
   return Object.values(routes).find((route) => route.path === window.location.pathname)
