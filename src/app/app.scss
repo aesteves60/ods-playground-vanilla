@@ -10,7 +10,7 @@ $side-menu-height: 220px;
   width: 100%;
   height: 100%;
 
-  &:has(~ .app__layout) {
+  &:has(~ .app__layout--display) {
     top: $header-height;
     left: $side-menu-height;
     width: calc(100% - $side-menu-height);
@@ -21,6 +21,10 @@ $side-menu-height: 220px;
     display: none;
     grid-template-columns: $side-menu-height 1fr;
     height: 100%;
+
+    &--display {
+      display: grid;
+    }
 
     &__header {
       position: fixed;

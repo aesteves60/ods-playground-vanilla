@@ -23,10 +23,10 @@ import { DeleteModal } from './page/products/components/delete-modal/delete-moda
   store.subscribe(() => {
     const sessionState = store.getState().session;
     if (sessionState.signInStatus === ACTION_STATUS.succeeded) {
-      return appLayout.style.display = 'grid';
+      return appLayout.classList.add('app__layout--display')
     }
     if (sessionState.signOutStatus === ACTION_STATUS.succeeded) {
-      return appLayout.style.display = 'none';
+      return appLayout.classList.remove('app__layout--display')
     }
   })
 
@@ -37,7 +37,7 @@ import { DeleteModal } from './page/products/components/delete-modal/delete-moda
     } else {
       navigate(RouteName.DASHBOARD)
     }
-    appLayout.style.display = 'grid';
+    appLayout.classList.add('app__layout--display')
   } else {
     navigate(RouteName.SIGN_IN);
   }
