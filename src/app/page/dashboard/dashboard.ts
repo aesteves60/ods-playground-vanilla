@@ -59,6 +59,8 @@ class Dashboard {
 
   destroy() {
     this.storeUnsubscribe?.()
+    this.previousCountUsersStatus = ACTION_STATUS.idle
+    this.previousCountProductStatus = ACTION_STATUS.idle
   }
 
   static loadTemplate(): string {
