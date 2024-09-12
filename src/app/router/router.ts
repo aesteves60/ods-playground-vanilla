@@ -26,7 +26,6 @@ const navigate = (routeName: RouteName, params?: Record<string, string>) => {
   }
 };
 
-
 const getCurrentRoute = () => {
   return Object.values(routes).find((route) => route.path === window.location.pathname)
 }

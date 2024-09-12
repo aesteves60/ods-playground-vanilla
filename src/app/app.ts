@@ -20,6 +20,11 @@ import { DeleteModal } from './page/products/components/delete-modal/delete-moda
   defineAppCustomElements();
   injectAppElement(app);
 
+  window.onpopstate = () => {
+    const routeKey = getCurrentRouteKey()
+    routeKey && navigate(routeKey);
+  };
+
   store.subscribe(() => {
     const sessionState = store.getState().session;
     if (sessionState.signInStatus === ACTION_STATUS.succeeded) {
