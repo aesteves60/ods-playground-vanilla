@@ -1,13 +1,14 @@
 import './edit-product.scss';
 import template from './edit-product.html?raw';
-import { store } from '@app/state/store';
-import { getById } from '@app/state/store/products';
+
 import { ACTION_STATUS } from '@app/constant/slice';
 import { FormProduct } from '../components/form-product/form-product';
-import { getQuerySelector } from '@app/helpers/render';
-import { navigate } from '@app/router/router';
 import { RouteName } from '@app/router/route';
 import { Unsubscribe } from '@reduxjs/toolkit';
+import { getById } from '@app/state/store/products';
+import { getQuerySelector } from '@app/helpers/render';
+import { navigate } from '@app/router/router';
+import { store } from '@app/state/store';
 
 class EditProduct {
   private previousGetByIdStatus = ACTION_STATUS.idle
@@ -18,7 +19,7 @@ class EditProduct {
     this.setHTMLElement()
 
     const id = Number(window.location.pathname.split('/').pop())
-    store.dispatch(getById(id));
+    await store.dispatch(getById(id));
     this.storeUnsubscribe = store.subscribe(() => {
       const productsState = store.getState().products
       const hasGetByIdStatusChange = this.previousGetByIdStatus !== productsState.listStatus

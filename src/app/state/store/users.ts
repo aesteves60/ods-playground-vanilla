@@ -1,6 +1,3 @@
-import type { User } from '../../models/user'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { ACTION_STATUS } from '../../constant/slice'
 import {
   count as countRequest,
   create as createRequest,
@@ -9,8 +6,11 @@ import {
   list as listRequest,
   update as updateRequest,
 } from '../services/users'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { ACTION_STATUS } from '@app/constant/slice'
+import type { User } from '@app/models/user'
 
-type UserReducerState = {
+interface UserReducerState {
   createStatus: ACTION_STATUS,
   count?: number,
   countStatus: ACTION_STATUS,
@@ -22,57 +22,43 @@ type UserReducerState = {
   updateStatus: ACTION_STATUS,
 }
 
-type ListActionPayload = {
+interface ListActionPayload {
   page?: number,
   perPage?: number,
 }
 
 const initialState: UserReducerState = {
-  createStatus: ACTION_STATUS.idle,
   count: undefined,
   countStatus: ACTION_STATUS.idle,
+  createStatus: ACTION_STATUS.idle,
   deleteStatus: ACTION_STATUS.idle,
   getByIdStatus: ACTION_STATUS.idle,
   listStatus: ACTION_STATUS.idle,
+  updateStatus: ACTION_STATUS.idle,
   user: undefined,
   users: undefined,
-  updateStatus: ACTION_STATUS.idle,
 }
 
-const create = createAsyncThunk('users/create', async (user: User) => {
-  return createRequest(user)
-})
+const create = createAsyncThunk('users/create', async (user: User) => createRequest(user))
 
-const count = createAsyncThunk('users/count', async () => {
-  return countRequest()
-})
+const count = createAsyncThunk('users/count', async () => countRequest())
 
-const deleteUser = createAsyncThunk('users/deleteUser', async (id: number) => {
-  return deleteUserRequest(id)
-})
+const deleteUser = createAsyncThunk('users/deleteUser', async (id: number) => deleteUserRequest(id))
 
-const getById = createAsyncThunk('users/getById', async (id: number) => {
-  return getByIdRequest(id)
-})
+const getById = createAsyncThunk('users/getById', async (id: number) => getByIdRequest(id))
 
-const list = createAsyncThunk('users/list', async ({ page, perPage }: ListActionPayload) => {
-  return listRequest(page, perPage)
-})
+const list = createAsyncThunk('users/list', async ({ page, perPage }: ListActionPayload) => listRequest(page, perPage))
 
-const update = createAsyncThunk('users/update', async (user: User) => {
-  return updateRequest(user)
-})
+const update = createAsyncThunk('users/update', async (user: User) => updateRequest(user))
 
 const usersSlice = createSlice({
-  name: 'users',
-  initialState,
-  reducers: {},
+  // eslint-disable-next-line max-lines-per-function
   extraReducers(builder) {
     builder
       .addCase(create.fulfilled, (state, action) => {
         state.createStatus = ACTION_STATUS.succeeded
         state.user = action.payload
-        state.users = (state.users || []).concat([action.payload])
+        state.users = (state.users ?? []).concat([action.payload])
       })
       .addCase(create.pending, (state) => {
         state.createStatus = ACTION_STATUS.pending
@@ -94,7 +80,7 @@ const usersSlice = createSlice({
 
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.deleteStatus = ACTION_STATUS.succeeded
-        state.users = (state.users || []).filter((user) => user.id !== action.payload)
+        state.users = (state.users ?? []).filter((user) => user.id !== action.payload)
         state.count = (state.count ?? 1) - 1
       })
       .addCase(deleteUser.pending, (state) => {
@@ -116,7 +102,7 @@ const usersSlice = createSlice({
       })
 
       .addCase(list.fulfilled, (state, action) => {
-        state.count = action.payload.count,
+        state.count = action.payload.count
         state.users = action.payload.users
         state.listStatus = ACTION_STATUS.succeeded
       })
@@ -129,7 +115,7 @@ const usersSlice = createSlice({
 
       .addCase(update.fulfilled, (state, action) => {
         state.user = action.payload
-        state.users = (state.users || []).map((user) => (
+        state.users = (state.users ?? []).map((user) => (
           user.id === action.payload.id ? action.payload : user
         ))
         state.updateStatus = ACTION_STATUS.succeeded
@@ -140,7 +126,10 @@ const usersSlice = createSlice({
       .addCase(update.rejected, (state) => {
         state.updateStatus = ACTION_STATUS.failed
       })
-  }
+  },
+  initialState,
+  name: 'users',
+  reducers: {},
 })
 
 export {

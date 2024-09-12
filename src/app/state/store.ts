@@ -7,9 +7,9 @@ const combinedReducer = combineReducers({
   products: productsReducer,
   session: sessionReducer,
   users: usersReducer,
-})
+}),
 
-const store = configureStore({
+ store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,
   }),

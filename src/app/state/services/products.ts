@@ -1,14 +1,15 @@
-import { config } from '@app/config'
+/* eslint-disable @typescript-eslint/unbound-method */
+import { Product, ProductApiData } from '@app/models/product'
 import { erase, get, post, put } from '@app/helpers/http'
-import { Product } from '@app/models/product'
+import { config } from '@app/config'
 
 async function create(product: Product) {
-  return post(`${config.api.products}/add`, product.toApi())
+  return post<ProductApiData>(`${config.api.products}/add`, product.toApi())
     .then(Product.fromApi)
 }
 
 async function count() {
-  return get(`${config.api.products}?limit=1&select=id`)
+  return get<{ total: number }>(`${config.api.products}?limit=1&select=id`)
     .then(({ total }) => total)
 }
 
@@ -18,22 +19,22 @@ async function deleteProduct(id: number) {
 }
 
 async function getById(id: number) {
-  return get(`${config.api.products}/${id}`)
+  return get<ProductApiData>(`${config.api.products}/${id}`)
     .then(Product.fromApi)
 }
 
 async function list(page = 0, perPage = 10) {
   const skip = Math.max(0, (page - 1) * perPage)
 
-  return get(`${config.api.products}?skip=${skip}&limit=${perPage}`)
+  return get<{products?: ProductApiData[], total: number }>(`${config.api.products}?skip=${skip}&limit=${perPage}`)
     .then(({ products, total }) => ({
       count: total,
-      products: (products || []).map(Product.fromApi),
+      products: (products ?? []).map(Product.fromApi),
     }))
 }
 
 async function update(product: Product) {
-  return put(`${config.api.products}/${product.id}`, product.toApi())
+  return put<ProductApiData>(`${config.api.products}/${product.id}`, product.toApi())
     .then(Product.fromApi)
 }
 

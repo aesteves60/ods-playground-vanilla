@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import { getSessionToken } from './session'
 
 enum HTTP_METHOD {
@@ -9,13 +10,14 @@ enum HTTP_METHOD {
 
 async function onFetchResponse(response: Response) {
   if (!response.ok) {
-    return Promise.reject(`Request failed : ${response.status}`)
+    return Promise.reject(new Error(`Request failed : ${response.status}`))
   }
 
   return response.json()
-    .catch((error) => {
-      return Promise.reject(error)
-    })
+    .catch((error: unknown) =>
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+      Promise.reject(error)
+    ) as Promise<unknown>
 }
 
 function getRequestOptions(method: HTTP_METHOD, body?: unknown) {
@@ -35,27 +37,27 @@ function getRequestOptions(method: HTTP_METHOD, body?: unknown) {
   return requestOptions
 }
 
-async function request(url: string, method: HTTP_METHOD, body?: unknown) {
+function request(url: string, method: HTTP_METHOD, body?: unknown) {
   const requestOptions = getRequestOptions(method, body)
 
   return fetch(url, requestOptions)
     .then(onFetchResponse)
 }
 
-async function erase(url: string) {
-  return request(url, HTTP_METHOD.delete)
+function erase<T>(url: string) {
+  return request(url, HTTP_METHOD.delete) as Promise<T>
 }
 
-async function get(url: string) {
-  return request(url, HTTP_METHOD.get)
+function get<T>(url: string) {
+  return request(url, HTTP_METHOD.get) as Promise<T>
 }
 
-async function post(url: string, body?: unknown) {
-  return request(url, HTTP_METHOD.post, body)
+function post<T>(url: string, body?: unknown) {
+  return request(url, HTTP_METHOD.post, body) as Promise<T>
 }
 
-async function put(url: string, body?: unknown) {
-  return request(url, HTTP_METHOD.put, body)
+async function put<T>(url: string, body?: unknown) {
+  return request(url, HTTP_METHOD.put, body) as Promise<T>
 }
 
 export {

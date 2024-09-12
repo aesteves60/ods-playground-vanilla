@@ -1,7 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 function getQuerySelector<T extends Element>(query: string, ctx?: Element): T {
-    const element = (ctx || document).querySelector<T>(query);
+    const element = (ctx ?? document).querySelector<T>(query);
     if (!element) {
-        throw new Error('Element with query: ' + query + ' not found');
+        throw new Error(`Element with query: ${  query  } not found`);
     }
     return element;
 }
