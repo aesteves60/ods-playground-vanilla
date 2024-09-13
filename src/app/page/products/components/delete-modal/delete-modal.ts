@@ -1,7 +1,7 @@
 import template from './delete-modal.html?raw';
 
-import { getQuerySelector } from '@app/helpers/render';
 import { OdsButton, OdsModal } from '@ovhcloud/ods-components';
+import { getQuerySelector } from '@app/helpers/render';
 class DeleteModal extends HTMLElement {
   private buttonCancel!: OdsButton & HTMLElement;
   private buttonDelete!: OdsButton & HTMLElement;
@@ -28,9 +28,10 @@ class DeleteModal extends HTMLElement {
     return this.hasAttribute('is-open');
   }
 
-  set productTitle(value: string) {
-    this.setAttribute('product-title', value)
-    this.text.innerText = this.text.innerText.replace('{ productTitle }', value ?? '')
+  set productTitle(value: string | null) {
+    const productTitle = value ?? ''
+    this.setAttribute('product-title', productTitle)
+    this.text.innerText = this.text.innerText.replace('{ productTitle }', productTitle)
   }
 
   get productTitle(): string | null {

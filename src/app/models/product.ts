@@ -1,5 +1,5 @@
 
-type ProductApiData = {
+interface ProductApiData {
   brand?: string
   category?: string
   description: string
@@ -13,10 +13,10 @@ type ProductApiData = {
   title: string
 }
 
-type ProductProps = {
+interface ProductProps {
   description: string
   id: number
-  images: string[]
+  images?: string[]
   price: number
   thumbnail: string
   title: string
@@ -33,7 +33,7 @@ class Product {
   constructor(props: ProductProps) {
     this.description = props.description
     this.id = props.id
-    this.images = props.images || []
+    this.images = props.images ?? []
     this.price = props.price
     this.thumbnail = props.thumbnail
     this.title = props.title

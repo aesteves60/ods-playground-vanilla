@@ -1,11 +1,29 @@
-import { nextTick } from "@app/helpers/render";
 import { Route, RouteName, routes } from "./route";
 import { hasSessionToken } from "@app/helpers/session";
+import { nextTick } from "@app/helpers/render";
 
+// eslint-disable-next-line init-declarations
 let app: HTMLElement;
-const injectAppElement = (appElement: HTMLElement) => app = appElement;
 
-const navigate = (routeName: RouteName, params?: Record<string, string>) => {
+function injectAppElement(appElement: HTMLElement) {
+  app = appElement
+}
+
+
+function getCurrentRoute() {
+  return Object.values(routes).find((route) => route.path === window.location.pathname)
+}
+
+function getCurrentRouteKey() {
+  return Object.keys(routes).find((routeKey) => routes[routeKey as RouteName].path === window.location.pathname) as RouteName | undefined
+}
+
+function renderPage(route: Route) {
+  app.innerHTML = route.template
+  nextTick(() => route.afterEnter?.())
+}
+
+function navigate(routeName: RouteName, params?: Record<string, string>) {
   const route = routes[routeName]
   if (hasSessionToken() && route.path !== window.location.pathname) {
     getCurrentRoute()?.afterExit?.();
@@ -21,22 +39,8 @@ const navigate = (routeName: RouteName, params?: Record<string, string>) => {
 
   if (route.guard?.()) {
     return renderPage(route);
-  } else {
-    return navigate(RouteName.SIGN_IN);
   }
-};
-
-const getCurrentRoute = () => {
-  return Object.values(routes).find((route) => route.path === window.location.pathname)
-}
-
-const getCurrentRouteKey = () => {
-  return Object.keys(routes).find((routeKey) => routes[routeKey as RouteName].path === window.location.pathname) as RouteName | undefined
-}
-
-const renderPage = (route: Route) => {
-  app.innerHTML = route.template
-  nextTick(() => route.afterEnter?.())
+  return navigate(RouteName.SIGN_IN);
 }
 
 export {

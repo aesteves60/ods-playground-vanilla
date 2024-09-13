@@ -9,7 +9,7 @@ function getSessionToken() {
 }
 
 function hasSessionToken() {
-  return !!getSessionToken()
+  return Boolean(getSessionToken())
 }
 
 function setSessionToken(token: string) {

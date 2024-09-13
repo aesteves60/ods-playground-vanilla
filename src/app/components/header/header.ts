@@ -2,11 +2,11 @@ import './header.scss'
 import template from './header.html?raw';
 
 import { OdsLink } from '@ovhcloud/ods-components';
-import { getQuerySelector } from '../../helpers/render';
-import { store } from '../../state/store';
-import { signOut } from '../../state/store/session';
-import { navigate } from '../../router/router';
 import { RouteName } from '../../router/route';
+import { getQuerySelector } from '../../helpers/render';
+import { navigate } from '../../router/router';
+import { signOut } from '../../state/store/session';
+import { store } from '../../state/store';
 
 class Header extends HTMLElement {
   linkSignOut!: OdsLink & HTMLElement;
@@ -20,7 +20,7 @@ class Header extends HTMLElement {
   connectedCallback() {
     this.linkSignOut = getQuerySelector<OdsLink & HTMLElement>('#header-sign-out')
     this.linkSignOut.addEventListener('click', () => {
-      store.dispatch(signOut())
+      void store.dispatch(signOut())
       navigate(RouteName.SIGN_IN);
     })
   }

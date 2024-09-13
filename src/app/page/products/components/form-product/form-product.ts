@@ -1,22 +1,24 @@
 import './form-product.scss';
 import template from './form-product.html?raw';
-import { OdsButton, OdsFormField, OdsInput, OdsTextarea } from '@ovhcloud/ods-components';
-import { getQuerySelector } from '@app/helpers/render';
-import * as z from 'zod';
-import { Product } from '@app/models/product';
 
+import * as z from 'zod';
+import { OdsButton, OdsFormField, OdsInput, OdsTextarea } from '@ovhcloud/ods-components';
+import { Product } from '@app/models/product';
+import { getQuerySelector } from '@app/helpers/render';
+
+/* eslint-disable camelcase */
 const validationSchema = z.object({
-  // category: z.string({ required_error: 'Category is required' }),
   description: z.string({ required_error: 'Description is required' }),
   price: z.number({
-    required_error: 'Price is required',
     invalid_type_error: 'Price must be a number',
+    required_error: 'Price is required',
   }).positive('Price value should be positive'),
-  // restockDate: z.date(),
-  // restockTime: z.string(),
   title: z.string({ required_error: 'Title is required' }),
+  // Category: z.string({ required_error: 'Category is required' }),
+  // RestockDate: z.date(),
+  // RestockTime: z.string(),
 })
-
+/* eslint-enable camelcase */
 
 class FormProduct extends HTMLElement {
   private form!: HTMLFormElement;
@@ -29,11 +31,11 @@ class FormProduct extends HTMLElement {
   private buttonCancel!: OdsButton & HTMLElement;
   private buttonSubmit!: OdsButton & HTMLElement;
 
-  constructor () {
-		super();
+  constructor() {
+    super();
 
-		this.innerHTML = template
-	}
+    this.innerHTML = template
+  }
 
   set product(value: Product) {
     this.setAttribute('product', JSON.stringify(value))
@@ -44,22 +46,22 @@ class FormProduct extends HTMLElement {
   }
 
   get product(): Product {
-    return JSON.parse(this.getAttribute('product') ?? '{}');
+    return JSON.parse(this.getAttribute('product') ?? '{}') as Product;
   }
 
   connectedCallback() {
     this.setHtmlElement()
 
-    this.inputTitle?.addEventListener('odsChange', async() => {
-      await this.handleInputError(this.inputTitle, this.formFieldTitle, 'title')
+    this.inputTitle.addEventListener('odsChange', () => {
+      FormProduct.handleInputError(this.inputTitle, this.formFieldTitle, 'title')
     })
 
-    this.inputPrice?.addEventListener('odsChange', async() => {
-      await this.handleInputError(this.inputPrice, this.formFieldPrice, 'price')
+    this.inputPrice.addEventListener('odsChange', () => {
+      FormProduct.handleInputError(this.inputPrice, this.formFieldPrice, 'price')
     })
 
-    this.textareaDescription?.addEventListener('odsChange', async() => {
-      await this.handleInputError(this.textareaDescription, this.formFieldDescription, 'description')
+    this.textareaDescription.addEventListener('odsChange', () => {
+      FormProduct.handleInputError(this.textareaDescription, this.formFieldDescription, 'description')
     })
 
     this.buttonCancel.addEventListener('click', () => {
@@ -70,43 +72,45 @@ class FormProduct extends HTMLElement {
       }))
     })
 
-    this.form.addEventListener('submit', async() => {
-      if (await this.isValidForm()) {
+    this.form.addEventListener('submit', () => {
+      if (this.isValidForm()) {
         this.dispatchEvent(new CustomEvent('submitProduct', {
           bubbles: true,
           cancelable: true,
           detail: {
-            title: this.inputTitle.value,
-            price: this.inputPrice.value,
             description: this.textareaDescription.value,
+            price: this.inputPrice.value,
+            title: this.inputTitle.value,
           }
         }))
       }
     })
   }
 
-  private async isValidForm() {
-    const titleError = await this.handleInputError(this.inputTitle, this.formFieldTitle, 'title')
-    const priceError = await this.handleInputError(this.inputPrice, this.formFieldPrice, 'price')
-    const descriptionError = await this.handleInputError(this.textareaDescription, this.formFieldDescription, 'description')
+  private isValidForm() {
+    const titleError = FormProduct.handleInputError(this.inputTitle, this.formFieldTitle, 'title')
+    const priceError = FormProduct.handleInputError(this.inputPrice, this.formFieldPrice, 'price')
+    const descriptionError = FormProduct.handleInputError(this.textareaDescription, this.formFieldDescription, 'description')
     return !titleError && !priceError && !descriptionError
   }
 
-  private async handleInputError(input: OdsInput | OdsTextarea, formField: OdsFormField, key: string) {
-    const value = key === 'price' ? Number(input.value) : input.value;
-    const result = await validationSchema.safeParse({ [key]: value ?? undefined });
+
+  static handleInputError(input: OdsInput | OdsTextarea, formField: OdsFormField, key: string) {
+    const value = key === 'price' ? Number(input.value) : input.value
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const result = validationSchema.safeParse({ [key]: value || undefined });
     if (!result.success) {
-      for (const issue of result.error.issues) {
-        if (issue.path[0] === key) {
-          input.hasError = true
-          formField.error = issue.message
-          return issue.message;
-        } else {
-          input.hasError = false
-          formField.error = ''
-        }
+      const issue = result.error.issues.find((i) => i.path[0] === key)
+      if (issue) {
+        input.hasError = true
+        formField.error = issue.message
+        return issue.message;
       }
+      input.hasError = false
+      formField.error = ''
+      return ''
     }
+    return ''
   }
 
   private setHtmlElement() {

@@ -1,10 +1,10 @@
-import { EditProduct } from "@app/page/products/edit/edit-product";
-import { hasSessionToken } from "../helpers/session";
 import { Dashboard } from "../page/dashboard/dashboard";
-import { Products } from "../page/products/list/products";
+import { EditProduct } from "@app/page/products/edit/edit-product";
 import { NewProduct } from "../page/products/new/new-product";
+import { Products } from "../page/products/list/products";
 import { SignIn } from "../page/signIn/signIn";
 import { Users } from "../page/users/users";
+import { hasSessionToken } from "../helpers/session";
 
 enum RouteName {
   SIGN_IN = 'SIGN_IN',
@@ -14,8 +14,6 @@ enum RouteName {
   EDIT_PRODUCTS = 'EDIT_PRODUCTS',
   NEW_PRODUCTS = 'NEW_PRODUCTS',
 }
-
-
 
 interface Route {
   afterEnter?: () => void;
@@ -29,81 +27,81 @@ interface Route {
   path: string;
 }
 
-const guard = () => {
-  return hasSessionToken();
+function guard () {
+  return hasSessionToken()
 }
 
 const routes: Record<RouteName, Route> = {
   [RouteName.SIGN_IN]: {
+    afterEnter() {
+      this.instance.init();
+    },
+    afterExit() {
+      this.instance.destroy();
+    },
+    instance: new SignIn(),
     path: '/',
     template: SignIn.loadTemplate(),
-    instance: new SignIn(),
-    afterEnter: function() {
-      this.instance.init();
-    },
-    afterExit: function() {
-      this.instance.destroy();
-    }
   },
   [RouteName.DASHBOARD]: {
+    afterEnter() {
+      this.instance.init();
+    },
+    afterExit() {
+      this.instance.destroy();
+    },
+    guard,
+    instance: new Dashboard(),
     path: '/dashboard',
     template: Dashboard.loadTemplate(),
-    instance: new Dashboard(),
-    afterEnter: function() {
-      this.instance.init();
-    },
-    afterExit: function() {
-      this.instance.destroy();
-    },
-    guard,
   },
   [RouteName.USERS]: {
+    afterEnter() {
+      this.instance.init();
+    },
+    afterExit() {
+      this.instance.destroy();
+    },
+    guard,
+    instance: new Users(),
     path: '/users',
     template: Users.loadTemplate(),
-    instance: new Users(),
-    afterEnter: function() {
-      this.instance.init();
-    },
-    afterExit: function() {
-      this.instance.destroy();
-    },
-    guard,
   },
   [RouteName.PRODUCTS]: {
+    afterEnter() {
+      this.instance.init();
+    },
+    afterExit() {
+      this.instance.destroy();
+    },
+    guard,
+    instance: new Products(),
     path: '/products',
     template: Products.loadTemplate(),
-    instance: new Products(),
-    afterEnter: function() {
-      this.instance.init();
-    },
-    afterExit: function() {
-      this.instance.destroy();
-    },
-    guard,
   },
   [RouteName.NEW_PRODUCTS]: {
+    afterEnter() {
+      this.instance.init();
+    },
+    afterExit() {
+      this.instance.destroy();
+    },
+    guard,
+    instance: new NewProduct(),
     path: '/products/new',
     template: NewProduct.loadTemplate(),
-    instance: new NewProduct(),
-    afterEnter: function() {
-      this.instance.init();
-    },
-    afterExit: function() {
-      this.instance.destroy();
-    },
-    guard,
   },
   [RouteName.EDIT_PRODUCTS]: {
-    path: '/products/:id',
-    template: EditProduct.loadTemplate(),
-    instance: new EditProduct(),
-    afterEnter: function() {
+    afterEnter() {
       this.instance.init();
     },
-    afterExit: function() {
+    afterExit() {
       this.instance.destroy();
     },
     guard,
+    instance: new EditProduct(),
+    path: '/products/:id',
+    template: EditProduct.loadTemplate(),
   },
 };
 

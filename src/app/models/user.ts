@@ -1,4 +1,4 @@
-type UserApiData = {
+interface UserApiData {
   email: string
   firstName: string
   id: number
@@ -9,7 +9,7 @@ type UserApiData = {
   role: 'admin' | 'moderator' | 'user'
 }
 
-type UserProps = {
+interface UserProps {
   email: string
   firstName: string
   id: number

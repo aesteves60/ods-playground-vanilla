@@ -1,14 +1,15 @@
-import { config } from '@app/config'
+/* eslint-disable @typescript-eslint/unbound-method */
+import { User, UserApiData } from '@app/models/user'
 import { erase, get, post, put } from '@app/helpers/http'
-import { User } from '@app/models/user'
+import { config } from '@app/config'
 
 async function count() {
-  return get(`${config.api.users}?limit=1&select=id`)
+  return get<{ total: number }>(`${config.api.users}?limit=1&select=id`)
     .then(({ total }) => total)
 }
 
 async function create(user: User) {
-  return post(`${config.api.users}/add`, user.toApi())
+  return post<UserApiData>(`${config.api.users}/add`, user.toApi())
     .then(User.fromApi)
 }
 
@@ -18,22 +19,22 @@ async function deleteUser(id: number) {
 }
 
 async function getById(id: number) {
-  return get(`${config.api.users}/${id}`)
+  return get<UserApiData>(`${config.api.users}/${id}`)
     .then(User.fromApi)
 }
 
 async function list(page = 0, perPage = 10) {
   const skip = Math.max(0, (page - 1) * perPage)
 
-  return get(`${config.api.users}?skip=${skip}&limit=${perPage}`)
+  return get<{ users?: UserApiData[], total: number }>(`${config.api.users}?skip=${skip}&limit=${perPage}`)
     .then(({ users, total }) => ({
       count: total,
-      users: (users || []).map(User.fromApi),
+      users: (users ?? []).map(User.fromApi),
     }))
 }
 
 async function update(user: User) {
-  return put(`${config.api.users}/${user.id}`, user.toApi())
+  return put<UserApiData>(`${config.api.users}/${user.id}`, user.toApi())
     .then(User.fromApi)
 }
 

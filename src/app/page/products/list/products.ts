@@ -1,16 +1,16 @@
 import './products.scss';
 import template from './products.html?raw';
 
-import { store } from '@app/state/store';
-import { deleteProduct, list } from '@app/state/store/products';
-import { OdsPagination, OdsPaginationCurrentChangeEvent, OdsTable } from '@ovhcloud/ods-components';
+import { OdsPagination, OdsPaginationCurrentChangeEvent, OdsPaginationItemPerPageChangedEvent, OdsTable } from '@ovhcloud/ods-components';
+import { ProductReducerState, deleteProduct, list } from '@app/state/store/products';
 import { getQuerySelector, nextTick } from '@app/helpers/render';
 import { ACTION_STATUS } from '@app/constant/slice';
 import { DeleteModal } from '../components/delete-modal/delete-modal';
 import { Product } from '@app/models/product';
-import { navigate } from '@app/router/router';
 import { RouteName } from '@app/router/route';
 import { Unsubscribe } from '@reduxjs/toolkit';
+import { navigate } from '@app/router/router';
+import { store } from '@app/state/store';
 
 class Products {
   private content!: HTMLElement;
@@ -27,67 +27,79 @@ class Products {
     this.setHtmlElement()
 
     this.pagination.addEventListener('odsChange', (({ detail }: OdsPaginationCurrentChangeEvent) => {
-        this.loadList({ page: detail.current, perPage: detail.itemPerPage });
-      }) as EventListener)
+      this.loadList({ page: detail.current, perPage: detail.itemPerPage })
+    }) as unknown as EventListener)
 
-    this.modal.addEventListener('delete', () => {
+    this.pagination.addEventListener('odsItemPerPageChange', (({ detail }: OdsPaginationItemPerPageChangedEvent) => {
+      this.loadList({ page: detail.currentPage, perPage: detail.current })
+    }) as unknown as EventListener)
+
+    this.modal.addEventListener('delete', () =>
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
-    })
+    )
 
     this.loadList({ page: await this.pagination.getCurrentPage(), perPage: this.pagination.defaultItemsPerPage })
   }
 
   destroy() {
     this.stateUnsubscribe?.()
-    this.pagination.removeEventListener('odsChange', (({ detail }: OdsPaginationCurrentChangeEvent) => {
-        this.loadList({ page: detail.current, perPage: detail.itemPerPage });
-      }) as EventListener)
+    this.pagination.removeEventListener('odsChange', ((({ detail }: OdsPaginationCurrentChangeEvent) => {
+      this.loadList({ page: detail.current, perPage: detail.itemPerPage })
+    })) as unknown as EventListener)
 
-    this.modal.removeEventListener('delete', () => {
+    this.pagination.removeEventListener('odsItemPerPageChange', (({ detail }: OdsPaginationItemPerPageChangedEvent) => {
+      this.loadList({ page: detail.currentPage, perPage: detail.current })
+    }) as unknown as EventListener)
+
+    this.modal.removeEventListener('delete', () =>
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
-    })
+    )
     this.previousListStatus = ACTION_STATUS.idle;
     this.previousDeleteStatus = ACTION_STATUS.idle;
   }
 
   private loadList({ page, perPage }: { page: number; perPage: number }) {
-    store.dispatch(list({ page, perPage }))
+    void store.dispatch(list({ page, perPage }));
     this.stateUnsubscribe = store.subscribe(() => {
       const productsState = store.getState().products
 
-      // List change
-      const hasListStatusChange = this.previousListStatus !== productsState.listStatus
-      if (hasListStatusChange && productsState.listStatus === ACTION_STATUS.succeeded) {
-        this.renderTable(productsState.products ?? [])
-        this.pagination.totalItems = productsState.count
-        this.loading.style.display = 'none'
-        this.content.style.display = 'grid'
-        this.pagination.style.display = 'flex'
-      }
-      if (hasListStatusChange && productsState.listStatus === ACTION_STATUS.pending) {
-        this.loading.style.display = 'block'
-        this.content.style.display = 'none'
-        this.pagination.style.display = 'none'
-      }
-
-      // Delete change
-      const hasDeleteStatusChange = this.previousDeleteStatus !== productsState.deleteStatus
-      if (hasDeleteStatusChange && productsState.deleteStatus === ACTION_STATUS.succeeded) {
-        this.renderTable(productsState.products ?? [])
-        this.pagination.totalItems = productsState.count
-        this.loading.style.display = 'none'
-        this.content.style.display = 'grid'
-        this.pagination.style.display = 'flex'
-      }
-      this.previousListStatus = productsState.listStatus
-      this.previousDeleteStatus = productsState.deleteStatus
+      this.handlerListChange(productsState)
+      this.handlerDeleteChange(productsState)
     })
+  }
+
+  private handlerListChange(productsState: ProductReducerState) {
+    const hasListStatusChange = this.previousListStatus !== productsState.listStatus
+    if (hasListStatusChange && productsState.listStatus === ACTION_STATUS.succeeded) {
+      this.renderTable(productsState.products ?? [])
+      this.pagination.totalItems = productsState.count
+      this.loading.style.display = 'none'
+      this.content.style.display = 'grid'
+      this.pagination.style.display = 'flex'
+    }
+    if (hasListStatusChange && productsState.listStatus === ACTION_STATUS.pending) {
+      this.loading.style.display = 'block'
+      this.content.style.display = 'none'
+      this.pagination.style.display = 'none'
+    }
+    this.previousListStatus = productsState.listStatus
 
   }
 
+  private handlerDeleteChange(productsState: ProductReducerState) {
+    const hasDeleteStatusChange = this.previousDeleteStatus !== productsState.deleteStatus
+    if (hasDeleteStatusChange && productsState.deleteStatus === ACTION_STATUS.succeeded) {
+      this.renderTable(productsState.products ?? [])
+      this.pagination.totalItems = productsState.count
+      this.loading.style.display = 'none'
+      this.content.style.display = 'grid'
+      this.pagination.style.display = 'flex'
+    }
+    this.previousDeleteStatus = productsState.deleteStatus
+  }
+
   private renderTable(products: Product[]) {
-    const rowTable = products.map((product) => {
-      return `<tr>
+    const rowTable = products.map((product) => `<tr>
         <td>${product.id}</td>
         <td>${product.title}</td>
         <td>${product.price}</td>
@@ -98,17 +110,16 @@ class Products {
           <ods-button id="product-edit-item-${product.id}" variant="ghost" icon="pen"></ods-button>
           <ods-button id="product-delete-item-${product.id}" variant="ghost" icon="trash"></ods-button>
         </td>
-      </tr>`;
-    }).join('')
-    const tbody = this.table.querySelector('tbody')
+      </tr>`).join(''),
+      tbody = this.table.querySelector('tbody')
     if (tbody) {
       while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
       }
-      tbody.innerHTML = tbody.innerHTML + rowTable
+      tbody.innerHTML += rowTable
     }
 
-    // wait render
+    // Wait render
     nextTick(() => {
       products.forEach((product) => {
         const productDeleteItemButton = getQuerySelector(`#product-delete-item-${product.id}`)
