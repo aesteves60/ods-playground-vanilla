@@ -3,29 +3,19 @@ import {
   signIn as signInRequest,
   signOut as signOutRequest,
 } from '../services/session'
-import { ACTION_STATUS } from '../../constant/slice';
+import { ACTION_STATUS } from '@app/constant/slice';
 
-type SignInPayload = {
+interface SignInPayload {
   password: string;
   username: string;
 }
 
-const signIn = createAsyncThunk('session/signIn', async ({ password, username }: SignInPayload) => {
-  return signInRequest(username, password)
-})
+const signIn = createAsyncThunk('session/signIn', ({ password, username }: SignInPayload) => signInRequest(username, password))
 
-const signOut = createAsyncThunk('session/signOut', async () => {
-  return signOutRequest()
-})
+const signOut = createAsyncThunk('session/signOut', () => signOutRequest())
 
 
 const sessionReducer = createSlice({
-  name: 'session',
-  initialState: {
-    signInStatus: ACTION_STATUS.idle,
-    signOutStatus: ACTION_STATUS.idle,
-  },
-  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(signIn.fulfilled, (state) => {
@@ -49,7 +39,13 @@ const sessionReducer = createSlice({
       .addCase(signOut.rejected, (state) => {
         state.signOutStatus = ACTION_STATUS.failed
       })
-  }
+  },
+  initialState: {
+    signInStatus: ACTION_STATUS.idle,
+    signOutStatus: ACTION_STATUS.idle,
+  },
+  name: 'session',
+  reducers: {},
 })
 
 export type {

@@ -1,0 +1,35 @@
+<div class="products">
+  <div class="products__header">
+    <ods-text preset="heading-2" class="products__header__title">List of products</ods-text>
+    <app-link label="Create a new product" class="products__header__link" route="NEW_PRODUCTS"></app-link>
+  </div>
+
+  <div class="products__content">
+    <ods-table id="products-table" class="products__table" size="md">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th scope="col">Thumbnail</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </ods-table>
+  </div>
+
+  <ods-pagination id="products-pagination" class="products__pagination">
+    <span slot="before-total-items">of </span>
+    <span slot="after-total-items"> results</span>
+  </ods-pagination>
+
+  <div class="products__content--loading">
+    <ods-spinner></ods-spinner>
+  </div>
+
+  <app-product-delete-modal id="products-delete-modal"></app-product-delete-modal>
+</div>

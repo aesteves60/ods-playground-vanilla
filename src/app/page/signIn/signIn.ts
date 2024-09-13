@@ -2,13 +2,13 @@ import './signIn.scss';
 import template from './signIn.html?raw';
 
 import { OdsButton, OdsFormField, OdsInput, OdsText } from '@ovhcloud/ods-components';
-import { store } from '../../state/store';
-import { navigate } from '../../router/router';
-import { signIn } from '../../state/store/session';
-import { ACTION_STATUS } from '../../constant/slice';
-import { getQuerySelector } from '../../helpers/render';
-import { RouteName } from '../../router/route';
+import { ACTION_STATUS } from '@app/constant/slice';
+import { RouteName } from '@app/router/route';
 import { Unsubscribe } from '@reduxjs/toolkit';
+import { getQuerySelector } from '@app/helpers/render';
+import { navigate } from '@app/router/router';
+import { signIn } from '@app/state/store/session';
+import { store } from '@app/state/store';
 
 class SignIn {
   private button!: OdsButton;
@@ -25,72 +25,65 @@ class SignIn {
   init() {
     this.setHtmlElement()
 
-    this.inputUsername?.addEventListener('odsChange', () => this.handlerOdsChangeUsername())
+    this.inputUsername.addEventListener('odsChange', () => this.handlerOdsChangeUsername())
 
-    this.inputPassword?.addEventListener('odsChange', () => this.handlerOdsChangePassword())
+    this.inputPassword.addEventListener('odsChange', () => this.handlerOdsChangePassword())
 
-    this.form?.addEventListener('submit', (event) => this.onSubmitForm(event))
+    this.form.addEventListener('submit', (event) => this.onSubmitForm(event))
 
-    this.storeUnsubscribe = store.subscribe(async () => {
-      let previousSignInStatus = this.signInStatus
+    this.storeUnsubscribe = store.subscribe(() => {
+      const previousSignInStatus = this.signInStatus
       this.signInStatus = store.getState().session.signInStatus
 
       if (previousSignInStatus !== this.signInStatus) {
-        await this.handlerSignInStatusChange()
+        this.handlerSignInStatusChange()
       }
     })
   }
 
   destroy() {
     this.storeUnsubscribe?.()
-    this.inputUsername?.removeEventListener('odsChange', () => this.handlerOdsChangeUsername())
-    this.inputPassword?.removeEventListener('odsChange', () => this.handlerOdsChangePassword())
-    this.form?.removeEventListener('submit', (event) => this.onSubmitForm(event))
+    this.inputUsername.removeEventListener('odsChange', () => this.handlerOdsChangeUsername())
+    this.inputPassword.removeEventListener('odsChange', () => this.handlerOdsChangePassword())
+    this.form.removeEventListener('submit', (event) => this.onSubmitForm(event))
   }
 
   private handlerOdsChangeUsername() {
-    this.onOdsInputChange(this.inputUsername, this.formFieldUsername, 'Fill the username, please')
+    SignIn.onOdsInputChange(this.inputUsername, this.formFieldUsername, 'Fill the username, please')
   }
 
   private handlerOdsChangePassword() {
-    this.onOdsInputChange(this.inputPassword, this.formFieldPassword, 'Fill the password, please')
+    SignIn.onOdsInputChange(this.inputPassword, this.formFieldPassword, 'Fill the password, please')
   }
 
-  private async handlerSignInStatusChange() {
-    if(this.signInStatus === ACTION_STATUS.pending) {
+  private handlerSignInStatusChange() {
+    if (this.signInStatus === ACTION_STATUS.pending) {
       this.errorMessage.style.display = 'none'
       this.button.isLoading = true
     }
 
-    if(this.signInStatus === ACTION_STATUS.succeeded) {
+    if (this.signInStatus === ACTION_STATUS.succeeded) {
       this.button.isLoading = false;
       this.errorMessage.style.display = 'none'
-      await navigate(RouteName.DASHBOARD);
+      navigate(RouteName.DASHBOARD);
     }
 
-    if(this.signInStatus === ACTION_STATUS.failed) {
+    if (this.signInStatus === ACTION_STATUS.failed) {
       this.errorMessage.style.display = 'block'
       this.button.isLoading = false
     }
   }
 
-  private onOdsInputChange(input: OdsInput, formField: OdsFormField, message: string) {
-    if (!input.value) {
-      input.hasError = true
-      formField.error = message
-    } else {
-      input.hasError = false
-      formField.error = ''
-    }
-  }
-
-  private async onSubmitForm(event: Event) {
+  private onSubmitForm(event: Event) {
     event.preventDefault()
 
-    const passwordValue = this.inputPassword?.value
-    const usernameValue = this.inputUsername?.value
+    const passwordValue = this.inputPassword.value,
+     usernameValue = this.inputUsername.value
     if (usernameValue && passwordValue) {
-      store.dispatch(signIn({ username: usernameValue.toString(), password: passwordValue.toString() }))
+      void  store.dispatch(signIn({
+        password: passwordValue.toString(),
+        username: usernameValue.toString(),
+      }))
     }
   }
 
@@ -106,6 +99,16 @@ class SignIn {
 
   static loadTemplate(): string {
     return template
+  }
+
+  private static onOdsInputChange(input: OdsInput, formField: OdsFormField, message: string) {
+    if (input.value) {
+      input.hasError = false
+      formField.error = ''
+    } else {
+      input.hasError = true
+      formField.error = message
+    }
   }
 }
 

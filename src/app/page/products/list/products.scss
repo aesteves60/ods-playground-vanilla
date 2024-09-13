@@ -1,0 +1,36 @@
+.products {
+  display: grid;
+  grid-template-rows: 100px 1fr;
+  row-gap: 10px;
+  margin: 0 1rem;
+  height: 100%;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__link ods-link::part(link) {
+      color: var(--ods-color-neutral-500);
+    }
+  }
+
+  &__table {
+    text-align: center;
+  }
+
+  &__content {
+    display: none;
+    overflow: auto;
+
+    &--loading {
+      display: block;
+      justify-self: center;
+    }
+  }
+
+  &__pagination {
+    display: none;
+    justify-self: center;
+  }
+}

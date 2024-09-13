@@ -1,0 +1,19 @@
+.header {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+  background-color: var(--ods-color-primary-500);
+  height: 100%;
+  padding: 0 15px;
+
+  &__title {
+    color: var(--ods-color-neutral-000);
+    font-weight: 600;
+  }
+
+  &__sign-out {
+    &::part(link) {
+      color: var(--ods-color-neutral-000);
+    }
+  }
+}

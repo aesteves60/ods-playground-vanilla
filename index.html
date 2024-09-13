@@ -3,10 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>ODS Vanilla Playground</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100vh;
+      }
+
+      li,
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: var(--ods-font-family-default);
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="app"></div>
+
+    <div id="app-layout" class="app__layout">
+      <app-header class="app__layout__header"></app-header>
+      <app-side-menu class="app__layout__side-menu"></app-side-menu>
+    </div>
 
     <script type="module" src="/src/app/app.ts"></script>
   </body>

@@ -1,15 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-// import productsReducer from 'app/state/slices/products'
+import productsReducer from './store/products'
 import sessionReducer from './store/session'
-// import usersReducer from 'app/state/slices/users'
+import usersReducer from './store/users'
 
 const combinedReducer = combineReducers({
-  // products: productsReducer,
+  products: productsReducer,
   session: sessionReducer,
-  // users: usersReducer,
-})
+  users: usersReducer,
+}),
 
-const store = configureStore({
+ store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,
   }),
