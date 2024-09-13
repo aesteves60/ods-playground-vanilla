@@ -8,15 +8,15 @@ import { getQuerySelector } from '@app/helpers/render';
 
 /* eslint-disable camelcase */
 const validationSchema = z.object({
-  // Category: z.string({ required_error: 'Category is required' }),
   description: z.string({ required_error: 'Description is required' }),
   price: z.number({
     invalid_type_error: 'Price must be a number',
     required_error: 'Price is required',
   }).positive('Price value should be positive'),
+  title: z.string({ required_error: 'Title is required' }),
+  // Category: z.string({ required_error: 'Category is required' }),
   // RestockDate: z.date(),
   // RestockTime: z.string(),
-  title: z.string({ required_error: 'Title is required' }),
 })
 /* eslint-enable camelcase */
 
@@ -31,11 +31,11 @@ class FormProduct extends HTMLElement {
   private buttonCancel!: OdsButton & HTMLElement;
   private buttonSubmit!: OdsButton & HTMLElement;
 
-  constructor () {
-		super();
+  constructor() {
+    super();
 
-		this.innerHTML = template
-	}
+    this.innerHTML = template
+  }
 
   set product(value: Product) {
     this.setAttribute('product', JSON.stringify(value))
@@ -97,7 +97,8 @@ class FormProduct extends HTMLElement {
 
   static handleInputError(input: OdsInput | OdsTextarea, formField: OdsFormField, key: string) {
     const value = key === 'price' ? Number(input.value) : input.value
-    const result = validationSchema.safeParse({ [key]: value ?? undefined });
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const result = validationSchema.safeParse({ [key]: value || undefined });
     if (!result.success) {
       const issue = result.error.issues.find((i) => i.path[0] === key)
       if (issue) {
@@ -105,6 +106,9 @@ class FormProduct extends HTMLElement {
         formField.error = issue.message
         return issue.message;
       }
+      input.hasError = false
+      formField.error = ''
+      return ''
     }
     return ''
   }

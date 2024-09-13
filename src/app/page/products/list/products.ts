@@ -1,7 +1,7 @@
 import './products.scss';
 import template from './products.html?raw';
 
-import { OdsPagination, OdsPaginationCurrentChangeEvent, OdsTable } from '@ovhcloud/ods-components';
+import { OdsPagination, OdsPaginationCurrentChangeEvent, OdsPaginationItemPerPageChangedEvent, OdsTable } from '@ovhcloud/ods-components';
 import { ProductReducerState, deleteProduct, list } from '@app/state/store/products';
 import { getQuerySelector, nextTick } from '@app/helpers/render';
 import { ACTION_STATUS } from '@app/constant/slice';
@@ -10,7 +10,7 @@ import { Product } from '@app/models/product';
 import { RouteName } from '@app/router/route';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import { navigate } from '@app/router/router';
-import { AppDispatch, store } from '@app/state/store';
+import { store } from '@app/state/store';
 
 class Products {
   private content!: HTMLElement;
@@ -30,6 +30,10 @@ class Products {
       this.loadList({ page: detail.current, perPage: detail.itemPerPage })
     }) as unknown as EventListener)
 
+    this.pagination.addEventListener('odsItemPerPageChange', (({ detail }: OdsPaginationItemPerPageChangedEvent) => {
+      this.loadList({ page: detail.currentPage, perPage: detail.current })
+    }) as unknown as EventListener)
+
     this.modal.addEventListener('delete', () =>
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
     )
@@ -42,6 +46,10 @@ class Products {
     this.pagination.removeEventListener('odsChange', ((({ detail }: OdsPaginationCurrentChangeEvent) => {
       this.loadList({ page: detail.current, perPage: detail.itemPerPage })
     })) as unknown as EventListener)
+
+    this.pagination.removeEventListener('odsItemPerPageChange', (({ detail }: OdsPaginationItemPerPageChangedEvent) => {
+      this.loadList({ page: detail.currentPage, perPage: detail.current })
+    }) as unknown as EventListener)
 
     this.modal.removeEventListener('delete', () =>
       this.selectedProduct && store.dispatch(deleteProduct(this.selectedProduct.id))
