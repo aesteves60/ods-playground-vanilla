@@ -2,6 +2,7 @@ import './app.scss';
 
 import { getCurrentRouteKey, injectAppElement, navigate } from './router/router';
 import { ACTION_STATUS } from './constant/slice';
+import { Breadcrumb } from './components/breadcrumb/breadcrumb';
 import { DeleteModal } from './page/products/components/delete-modal/delete-modal';
 import { FormProduct } from './page/products/components/form-product/form-product';
 import { Header } from './components/header/header';
@@ -21,6 +22,7 @@ function defineAppCustomElements() {
     customElements.define('app-link', Link);
     customElements.define('app-form-product', FormProduct);
     customElements.define('app-product-delete-modal', DeleteModal);
+    customElements.define('app-breadcrumb', Breadcrumb);
   }
 }
 
