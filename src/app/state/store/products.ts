@@ -3,14 +3,18 @@ import {
   create as createRequest,
   deleteProduct as deleteProductRequest,
   getById as getByIdRequest,
+  getProductCategories as getProductCategoriesRequest,
   list as listRequest,
   update as updateRequest,
 } from '../services/products'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ACTION_STATUS } from '@app/constant/slice'
+import type { Category } from '@app/models/category'
 import type { Product } from '@app/models/product'
 
 interface ProductReducerState {
+  categories: Category[],
+  categoriesStatus: ACTION_STATUS,
   createStatus: ACTION_STATUS,
   count?: number,
   countStatus: ACTION_STATUS,
@@ -28,6 +32,8 @@ interface ListActionPayload {
 }
 
 const initialState: ProductReducerState = {
+  categories: [],
+  categoriesStatus: ACTION_STATUS.idle,
   count: undefined,
   countStatus: ACTION_STATUS.idle,
   createStatus: ACTION_STATUS.idle,
@@ -46,6 +52,8 @@ const count = createAsyncThunk('products/count', async () => countRequest())
 const deleteProduct = createAsyncThunk('products/deleteProduct', async (id: number) => deleteProductRequest(id))
 
 const getById = createAsyncThunk('products/getById', async (id: number) => getByIdRequest(id))
+
+const getProductCategories = createAsyncThunk('products/categories', async () => getProductCategoriesRequest())
 
 const list = createAsyncThunk('products/list', ({ page, perPage }: ListActionPayload) => listRequest(page, perPage))
 
@@ -101,6 +109,17 @@ const productsSlice = createSlice({
       state.getByIdStatus = ACTION_STATUS.failed
     })
 
+    .addCase(getProductCategories.fulfilled, (state, action) => {
+      state.categories = action.payload
+      state.categoriesStatus = ACTION_STATUS.succeeded
+    })
+    .addCase(getProductCategories.pending, (state) => {
+      state.categoriesStatus = ACTION_STATUS.pending
+    })
+    .addCase(getProductCategories.rejected, (state) => {
+      state.categoriesStatus = ACTION_STATUS.failed
+    })
+
     .addCase(list.fulfilled, (state, action) => {
       const payload = (action.payload as { count: number, products: Product[] })
       state.count = payload.count
@@ -139,6 +158,7 @@ export {
   count,
   deleteProduct,
   getById,
+  getProductCategories,
   list,
   update,
 }

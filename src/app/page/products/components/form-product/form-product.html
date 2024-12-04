@@ -1,6 +1,6 @@
 <form class="form-product" id="form-product-form" onsubmit="return false">
   <ods-form-field id="form-product-field-title">
-    <label for="form-product-title" slot="label">
+    <label for="form-product-input-title" slot="label">
       Title:
     </label>
 
@@ -8,21 +8,66 @@
   </ods-form-field>
 
   <ods-form-field id="form-product-field-price">
-    <label for="form-product-price" slot="label">
+    <label for="form-product-input-price" slot="label">
       Price:
     </label>
 
     <span>
-      <ods-input is-required name="price" class="form-product__input" id="form-product-input-price" type="number"></ods-input> €
+      <ods-input step="any" is-required name="price" class="form-product__input" id="form-product-input-price" type="number"></ods-input> €
     </span>
   </ods-form-field>
 
   <ods-form-field id="form-product-field-description">
-    <label for="form-product-description" slot="label">
+    <label for="form-product-textarea-description" slot="label">
       Description:
     </label>
 
-    <ods-textarea is-required   ="description" class="form-product__input" id="form-product-textarea-description" type="number"></ods-textarea>
+    <ods-textarea is-required name="description" class="form-product__input" id="form-product-textarea-description"></ods-textarea>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-stock">
+    <label for="form-product-select-stock" slot="label">
+      Stock:
+    </label>
+
+    <ods-quantity is-required name="stock" class="form-product__stock" id="form-product-quantity-stock">
+    </ods-quantity>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-min-order">
+    <label for="form-product-range-min-order" slot="label">
+      Minimum order quantity:
+    </label>
+
+    <div>
+      <ods-range default-value="0" is-required name="min-order" class="form-product__min-order" id="form-product-range-min-order">
+      </ods-range>
+    </div>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-return-policy">
+    <label for="form-product-checkbox-return-policy" slot="label">
+      Return policy:
+    </label>
+
+    <ods-checkbox name="return-policy" class="form-product__input" id="form-product-checkbox-return-policy"></ods-checkbox>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-restock-time">
+    <label for="form-product-timepicker-restock-time" slot="label">
+      Return policy:
+    </label>
+
+    <ods-timepicker name="restock-time" class="form-product__input" id="form-product-timepicker-restock-time"></ods-timepicker>
+  </ods-form-field>
+
+  <ods-form-field id="form-product-field-category">
+    <label for="form-product-select-category" slot="label">
+      Category:
+    </label>
+
+    <ods-select is-required name="category" class="form-product__input" id="form-product-select-category">
+    </ods-select>
   </ods-form-field>
 
   <div class="form-product__actions">
