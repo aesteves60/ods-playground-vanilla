@@ -5,6 +5,7 @@ import { Products } from "../page/products/list/products";
 import { SignIn } from "../page/signIn/signIn";
 import { Users } from "../page/users/users";
 import { hasSessionToken } from "../helpers/session";
+import { Faq } from "@app/page/faq/faq";
 
 enum RouteName {
   SIGN_IN = 'SIGN_IN',
@@ -13,6 +14,7 @@ enum RouteName {
   PRODUCTS = 'PRODUCTS',
   EDIT_PRODUCTS = 'EDIT_PRODUCTS',
   NEW_PRODUCTS = 'NEW_PRODUCTS',
+  FAQ = 'FAQ',
 }
 
 interface Route {
@@ -102,6 +104,18 @@ const routes: Record<RouteName, Route> = {
     instance: new EditProduct(),
     path: '/products/:id',
     template: EditProduct.loadTemplate(),
+  },
+  [RouteName.FAQ]: {
+    afterEnter() {
+      this.instance.init();
+    },
+    afterExit() {
+      this.instance.destroy();
+    },
+    guard,
+    instance: new Faq(),
+    path: '/faq',
+    template: Faq.loadTemplate(),
   },
 };
 
