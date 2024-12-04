@@ -1,0 +1,11 @@
+.faq {
+  display: grid;
+  grid-template-rows: 100px 1fr;
+  row-gap: 10px;
+  margin: 0 1rem;
+  text-align: center;
+
+  &__content {
+    text-align: start;
+  }
+}
