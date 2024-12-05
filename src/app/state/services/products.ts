@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { Category, CategoryApiData } from '@app/models/category'
 import { Product, ProductApiData } from '@app/models/product'
 import { erase, get, post, put } from '@app/helpers/http'
 import { config } from '@app/config'
@@ -17,6 +18,12 @@ async function deleteProduct(id: number) {
   return erase(`${config.api.products}/${id}`)
     .then(() => id)
 }
+
+async function getProductCategories() {
+  return get<CategoryApiData[]>(`${config.api.products}/categories`)
+    .then((categories) => categories.map((c) => Category.fromApi(c)))
+}
+
 
 async function getById(id: number) {
   return get<ProductApiData>(`${config.api.products}/${id}`)
@@ -43,6 +50,7 @@ export {
   count,
   deleteProduct,
   getById,
+  getProductCategories,
   list,
   update,
 }

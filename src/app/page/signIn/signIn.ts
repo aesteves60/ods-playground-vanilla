@@ -25,9 +25,13 @@ class SignIn {
   init() {
     this.setHtmlElement()
 
-    this.inputUsername.addEventListener('odsChange', () => this.handlerOdsChangeUsername())
+    this.inputUsername.addEventListener('odsInvalid', async() => {
+      this.formFieldUsername.error = await this.inputUsername.getValidationMessage()
+    })
 
-    this.inputPassword.addEventListener('odsChange', () => this.handlerOdsChangePassword())
+    this.inputPassword.addEventListener('odsInvalid', async() => {
+      this.formFieldPassword.error = await this.inputPassword.getValidationMessage()
+    })
 
     this.form.addEventListener('submit', (event) => this.onSubmitForm(event))
 
@@ -43,17 +47,14 @@ class SignIn {
 
   destroy() {
     this.storeUnsubscribe?.()
-    this.inputUsername.removeEventListener('odsChange', () => this.handlerOdsChangeUsername())
-    this.inputPassword.removeEventListener('odsChange', () => this.handlerOdsChangePassword())
+    this.inputUsername.removeEventListener('odsChange', async() => {
+      this.formFieldUsername.error = await this.inputUsername.getValidationMessage()
+    })
+    this.inputPassword.removeEventListener('odsChange', async() => {
+      this.formFieldPassword.error = await this.inputPassword.getValidationMessage()
+    })
+
     this.form.removeEventListener('submit', (event) => this.onSubmitForm(event))
-  }
-
-  private handlerOdsChangeUsername() {
-    SignIn.onOdsInputChange(this.inputUsername, this.formFieldUsername, 'Fill the username, please')
-  }
-
-  private handlerOdsChangePassword() {
-    SignIn.onOdsInputChange(this.inputPassword, this.formFieldPassword, 'Fill the password, please')
   }
 
   private handlerSignInStatusChange() {
@@ -99,16 +100,6 @@ class SignIn {
 
   static loadTemplate(): string {
     return template
-  }
-
-  private static onOdsInputChange(input: OdsInput, formField: OdsFormField, message: string) {
-    if (input.value) {
-      input.hasError = false
-      formField.error = ''
-    } else {
-      input.hasError = true
-      formField.error = message
-    }
   }
 }
 
